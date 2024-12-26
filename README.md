@@ -1,6 +1,9 @@
 # WebApp
 Authentication and simple object management
 
+## Project Features
+### 1. Project Breakdown
+ - User authentication (login, registration)
 ## Project realization
 ### 1. Backend
 ```bash
@@ -152,3 +155,26 @@ exports.login = async (req, res) => {
   ...
 };
 ```
+
+### 6. Object management
+#### 6.1 Create Object Models
+```javascript
+// models/Object.js
+...
+```
+#### 6.2 CRUD controller
+```javascript
+// controllers/objectController.js
+...
+```
+#### 6.3 CRUD route
+```javascript
+// routes/objectRoutes.js
+```
+#### 6.4 Mount the route to the main application
+```javascript
+// server.js
+app.use('/api/objects', objectRoutes); 
+```
+
+#### 6.5 Test api

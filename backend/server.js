@@ -2,7 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const authRoutes = require('./routes/authRoutes');
+const authRoutes = require('./routes/authRoutes');  // User Authentication Route
+const objectRoutes = require('./routes/objectRoutes'); // Object Management Route
 
 const app = express();
 app.use(bodyParser.json());
@@ -10,6 +11,7 @@ app.use(cors());
 
 // Mount Authentication Route
 app.use('/api/auth', authRoutes);
+app.use('/api/objects', objectRoutes);
 
 // Connect to the database and start the server
 const PORT = 5000;
