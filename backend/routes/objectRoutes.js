@@ -1,20 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const objectController = require('../controllers/objectController');
+const { verifyToken } = require('../middleware/authMiddleware');
 
 // Create object
-router.post('/', objectController.createObject);
+router.post('/', verifyToken, objectController.createObject);
 
 // Get all objects
-router.get('/', objectController.getAllObjects);
+router.get('/', verifyToken, objectController.getAllObjects);
 
 // Get object by id
-router.get('/:id', objectController.getObjectById);
+router.get('/:id', verifyToken, objectController.getObjectById);
 
 // Update object
-router.put('/:id', objectController.updateObject);
+router.put('/:id', verifyToken, objectController.updateObject);
 
 // Delet object
-router.delete('/:id', objectController.deleteObject);
+router.delete('/:id', verifyToken, objectController.deleteObject);
 
 module.exports = router;
