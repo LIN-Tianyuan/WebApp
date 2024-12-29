@@ -38,11 +38,21 @@ npm install
 ```
 
 ## Configuration
+Before running the application, you need to configure the following environment variables. These variables should be added to a `.env` file in the root of the project.
+### Steps:
+
+1. Create a `.env` file in the root directory of the project.
+2. Add the following configuration to your `.env` file:
 ```bash
-MONGO_URI=<your_mongodb_connection_string>
-JWT_SECRET=<your_jwt_secret_key>
+MONGO_URI: Your MongoDB connection string. You can get this from your MongoDB instance.
+SECRET_KEY: A secret key used to sign JSON Web Tokens (JWT). Make sure to use a secure, random string.
+
+### Example of `.env` file:
+MONGO_URI=mongodb://localhost:27017/my_database
+SECRET_KEY=mySuperSecretKey12345
 ```
 
+After creating the .env file with these variables, the application will automatically load them during runtime.
 ## Startup
  - Start the backend server
 ```bash

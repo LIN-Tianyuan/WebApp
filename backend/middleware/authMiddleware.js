@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = 'supersecretkey12345!@#$%';
+const SECRET_KEY = process.env.SECRET_KEY;
 
+// Middleware function to validate the JWT
 exports.verifyToken = (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
   if (!token) {

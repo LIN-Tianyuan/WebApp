@@ -1,7 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-require('dotenv').config(); // Load .env file
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
@@ -39,7 +38,12 @@ exports.register = async (req, res) => {
   }
 };
 
-// Login
+/**
+ * User Login
+ * @param {*} req Login information
+ * @param {*} res 
+ * @returns 
+ */
 exports.login = async (req, res) => {
     try {
       const { username, password } = req.body;
