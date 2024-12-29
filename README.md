@@ -69,3 +69,8 @@ npm run dev
    - **Login Protection**: If a user is not logged in and tries to access the object management page, they will be automatically redirected to the login page.
    - This ensures that only authenticated users can access the object management functionalities (adding, editing, deleting objects).
 
+## Project realization
+[Backend](./backend/README.md)
+
+[Frontend](./frontend/README.md)
+

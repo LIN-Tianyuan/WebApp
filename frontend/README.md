@@ -67,3 +67,134 @@ More information about the usage of this directory in [the documentation](https:
 This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
 
 More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
+
+
+### 2. Frontend
+```bash
+npx create-nuxt-app frontend
+
+cd frontend
+npm install bootstrap axios
+
+npm run dev
+```
+Visit `http://localhost:3000` to confirm that the front-end project is working properly.
+
+```javascript
+export default {
+  modules: ['@nuxtjs/axios'],
+  axios: {
+    baseURL: 'http://localhost:5000/api'
+  },
+};
+```
+### 3. Database(MongoDB)
+Installation
+```bash
+https://www.mongodb.com/try/download/community
+```
+Run
+```bash
+# Windows
+net start MongoDB
+
+# Mac/Linux
+sudo service mongod start
+```
+### 4. Registration
+#### 4.1 Define the user model
+```javascript
+const mongoose = require('mongoose');
+
+const UserSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+});
+
+module.exports = mongoose.model('User', UserSchema);
+```
+#### 4.2 registration function
+```javascript
+// controllers/authController.js
+// Register
+exports.register = async (req, res) => {
+  ...
+};
+```
+#### 4.3 Route: Registered Users
+```javascript
+const express = require('express');
+const router = express.Router();
+const authController = require('../controllers/authController');
+
+router.post('/register', authController.register);
+
+module.exports = router;
+```
+#### 4.4 Integrate Route
+```javascript
+const PORT = 5000;
+const MONGO_URI = 'mongodb://localhost:27017/webapp';
+mongoose
+  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('Connected to MongoDB');
+    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+  })
+  .catch((err) => console.log(err));
+```
+#### 4.5 Test
+```bash
+POST http://localhost:5000/api/auth/register
+```
+```bash
+Request Body:
+{
+  "username": "testuser",
+  "password": "password123"
+}
+```
+```bash
+Response:
+{
+  "message": "User registered successfully"
+}
+```
+### 5. Login
+```javascript
+// controllers/authController.js
+exports.login = async (req, res) => {
+  ...
+};
+```
+
+### 6. Object management
+#### 6.1 Create Object Models
+```javascript
+// models/Object.js
+...
+```
+#### 6.2 CRUD controller
+```javascript
+// controllers/objectController.js
+...
+```
+#### 6.3 CRUD route
+```javascript
+// routes/objectRoutes.js
+```
+#### 6.4 Mount the route to the main application
+```javascript
+// server.js
+app.use('/api/objects', objectRoutes); 
+```
+
+#### 6.5 Test api

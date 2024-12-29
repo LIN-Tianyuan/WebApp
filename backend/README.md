@@ -1,23 +1,19 @@
-# WebApp
-Authentication and simple object management
+# Backend
 
-## Project Features
-### 1. Project Breakdown
- - User authentication (login, registration)
-## Project realization
-### 1. Backend
+## 1. Initialize the back-end project
 ```bash
 # Create back-end project folder
 mkdir backend
 cd backend
 
 # Initialize the Node.js Project
+# Create the package.json file with npm init (-y for automatic generation of the default configuration)
 npm init -y
 
 # Install back-end dependencies
-npm install express mongoose bcryptjs jsonwebtoken cors body-parser
+npm install express mongoose bcryptjs jsonwebtoken cors body-parser dotenv
 
-# Installation of development tool dependencies
+# Installation of development tool dependencies (Use nodemon to automatically restart the server, and eslint to ensure code specification.)
 npm install --save-dev nodemon eslint
 
 # Creatie directory structure
@@ -31,7 +27,7 @@ npm install --save-dev nodemon eslint
 ```
 Start the test server
 ```javascript
-// server.js
+// server.js (test code)
 const express = require('express');
 const app = express();
 
@@ -49,40 +45,9 @@ npm run dev
 ```
 Visit `http://localhost:5000` to confirm that the server is functioning properly.
 
-### 2. Frontend
-```bash
-npx create-nuxt-app frontend
+## 2. User model
 
-cd frontend
-npm install bootstrap axios
-
-npm run dev
-```
-Visit `http://localhost:3000` to confirm that the front-end project is working properly.
-
-```javascript
-export default {
-  modules: ['@nuxtjs/axios'],
-  axios: {
-    baseURL: 'http://localhost:5000/api'
-  },
-};
-```
-### 3. Database(MongoDB)
-Installation
-```bash
-https://www.mongodb.com/try/download/community
-```
-Run
-```bash
-# Windows
-net start MongoDB
-
-# Mac/Linux
-sudo service mongod start
-```
-### 4. Registration
-#### 4.1 Define the user model
+Define the user model
 ```javascript
 const mongoose = require('mongoose');
 
@@ -101,7 +66,9 @@ const UserSchema = new mongoose.Schema({
 
 module.exports = mongoose.model('User', UserSchema);
 ```
-#### 4.2 registration function
+
+## 3. Registration
+### 3.1 Controller: Register New User
 ```javascript
 // controllers/authController.js
 // Register

@@ -1,10 +1,20 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+require('dotenv').config(); // Load .env file
 
-const SECRET_KEY = 'supersecretkey12345!@#$%';
+const SECRET_KEY = process.env.SECRET_KEY;
 
-// Register
+if (!SECRET_KEY) {
+  throw new Error('SECRET_KEY is not defined in the .env file');
+}
+
+/**
+ * User Register
+ * @param {*} req User's registration information
+ * @param {*} res Return response message
+ * @returns Promise<void>
+ */
 exports.register = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -25,7 +35,6 @@ exports.register = async (req, res) => {
     // Return information
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
-    console.log(error)
     res.status(500).json({ error: 'An error occurred during registration' });
   }
 };
