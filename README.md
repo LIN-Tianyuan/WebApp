@@ -1,180 +1,71 @@
-# WebApp
-Authentication and simple object management
+# Web Application - Auth and Object Management
 
-## Project Features
-### 1. Project Breakdown
- - User authentication (login, registration)
-## Project realization
-### 1. Backend
+This web application provides user authentication (login, registration) and basic management of objects (add, edit, delete, list). The application is built with Node.js (Express.js), MongoDB, Nuxt.js, and Bootstrap.
+
+## Features
+- User authentication (Login/Signup)
+- CRUD operations for objects
+- Simple and intuitive UI
+
+## Tech stack
+ - Node.js
+ - Express.js
+ - Nuxt.js
+ - MongoDB with Mongoose
+ - bcryptjs for password encryption
+ - Bootstrap for styling
+
+## Screenshots
+### Home Page
+![Home Page](img/home.png)
+### Login Page
+![Login Page](img/login.png)
+### Register Page
+![Register Page](img/register.png)
+### Object Page
+![Object Page](img/object.png)
+## Prerequisites
+```markdown
+- Node.js >= 14.x
+- MongoDB instance running locally or on cloud
+```
+
+## Installation
 ```bash
-# Create back-end project folder
-mkdir backend
-cd backend
-
-# Initialize the Node.js Project
-npm init -y
-
-# Install back-end dependencies
-npm install express mongoose bcryptjs jsonwebtoken cors body-parser
-
-# Installation of development tool dependencies
-npm install --save-dev nodemon eslint
-
-# Creatie directory structure
-# (models, controllers, routes, middleware, config, server.js)
-
-# Edit package.json: change the scripts to make it easier to start the server.
-"scripts": {
-  "start": "node server.js",
-  "dev": "nodemon server.js"
-}
+git clone <repository-url>
+cd <project-directory>
+npm install
 ```
-Start the test server
-```javascript
-// server.js
-const express = require('express');
-const app = express();
 
-app.use(express.json());
-app.get('/', (req, res) => {
-  res.send('Hello, Backend!');
-});
-
-const PORT = 5000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+## Configuration
+```bash
+MONGO_URI=<your_mongodb_connection_string>
+JWT_SECRET=<your_jwt_secret_key>
 ```
-Start the Development Server:
+
+## Startup
+ - Start the backend server
 ```bash
 npm run dev
 ```
-Visit `http://localhost:5000` to confirm that the server is functioning properly.
-
-### 2. Frontend
+ - Start the frontend server
 ```bash
-npx create-nuxt-app frontend
-
-cd frontend
-npm install bootstrap axios
-
 npm run dev
 ```
-Visit `http://localhost:3000` to confirm that the front-end project is working properly.
+## Usage
 
-```javascript
-export default {
-  modules: ['@nuxtjs/axios'],
-  axios: {
-    baseURL: 'http://localhost:5000/api'
-  },
-};
-```
-### 3. Database(MongoDB)
-Installation
-```bash
-https://www.mongodb.com/try/download/community
-```
-Run
-```bash
-# Windows
-net start MongoDB
+### 1. User Authentication
+   - **Registration**: Users can create a new account by providing their username and password.
+   - **Login**: Users can log in using their credentials (username and password).
+   - Only logged-in users can access certain features such as object management.
 
-# Mac/Linux
-sudo service mongod start
-```
-### 4. Registration
-#### 4.1 Define the user model
-```javascript
-const mongoose = require('mongoose');
+### 2. Object Management
+   - **Add Object**: Logged-in users can add new objects to their account.
+   - **Edit Object**: Users can modify the details of their existing objects.
+   - **Delete Object**: Users can remove objects they no longer need.
+   - **View Object List**: Users can see a list of all objects they have created or managed.
 
-const UserSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-});
+### 3. Authentication Requirement
+   - **Login Protection**: If a user is not logged in and tries to access the object management page, they will be automatically redirected to the login page.
+   - This ensures that only authenticated users can access the object management functionalities (adding, editing, deleting objects).
 
-module.exports = mongoose.model('User', UserSchema);
-```
-#### 4.2 registration function
-```javascript
-// controllers/authController.js
-// Register
-exports.register = async (req, res) => {
-  ...
-};
-```
-#### 4.3 Route: Registered Users
-```javascript
-const express = require('express');
-const router = express.Router();
-const authController = require('../controllers/authController');
-
-router.post('/register', authController.register);
-
-module.exports = router;
-```
-#### 4.4 Integrate Route
-```javascript
-const PORT = 5000;
-const MONGO_URI = 'mongodb://localhost:27017/webapp';
-mongoose
-  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log('Connected to MongoDB');
-    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
-  })
-  .catch((err) => console.log(err));
-```
-#### 4.5 Test
-```bash
-POST http://localhost:5000/api/auth/register
-```
-```bash
-Request Body:
-{
-  "username": "testuser",
-  "password": "password123"
-}
-```
-```bash
-Response:
-{
-  "message": "User registered successfully"
-}
-```
-### 5. Login
-```javascript
-// controllers/authController.js
-exports.login = async (req, res) => {
-  ...
-};
-```
-
-### 6. Object management
-#### 6.1 Create Object Models
-```javascript
-// models/Object.js
-...
-```
-#### 6.2 CRUD controller
-```javascript
-// controllers/objectController.js
-...
-```
-#### 6.3 CRUD route
-```javascript
-// routes/objectRoutes.js
-```
-#### 6.4 Mount the route to the main application
-```javascript
-// server.js
-app.use('/api/objects', objectRoutes); 
-```
-
-#### 6.5 Test api
