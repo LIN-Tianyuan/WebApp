@@ -80,6 +80,11 @@
 <script>
 export default {
   middleware: 'auth',
+  head() {
+    return {
+      title: 'Object Page'
+    }
+  },
   data() {
     return {
       objects: [],
@@ -90,6 +95,7 @@ export default {
     };
   },
   methods: {
+    // Get list of objects
     async fetchObjects() {
       try {
         const response = await this.$axios.get('/objects');
@@ -98,6 +104,7 @@ export default {
         console.error('Failed to fetch objects:', error);
       }
     },
+    // Add object
     async submitObject() {
       try {
         if (this.isEditing) {
@@ -122,12 +129,14 @@ export default {
         console.error('Failed to create or update object:', error);
       }
     },
+    // Edit object
     editObject(object) {
       this.newObject = { ...object };
       this.showForm = true;
       this.isEditing = true;
       this.editingObjectId = object._id;
     },
+    // Delete object
     async deleteObject(id) {
       try {
         await this.$axios.delete(`/objects/${id}`);
@@ -136,6 +145,7 @@ export default {
         console.error('Failed to delete object:', error);
       }
     },
+    // Toggle form display state
     toggleForm() {
       if (this.isEditing) {
         this.resetForm();

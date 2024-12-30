@@ -133,6 +133,9 @@ router.post('/login', authController.login);
 ```
 ## 5. Validate Token
 Middleware: protection routing
+
+Used to verify that a request contains a valid JWT token, which ensures that only authenticated users can access certain protected routes.
+
 ```javascript
 // middleware/authMiddleware.js
 exports.verifyToken = (req, res, next) => {

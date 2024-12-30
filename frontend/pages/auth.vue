@@ -52,6 +52,11 @@
 
 <script>
 export default {
+  head() {
+    return {
+      title: 'Auth Page'
+    }
+  },
   data() {
     return {
       isLogin: true, // Toggle between login and registration modes
@@ -73,20 +78,20 @@ export default {
       try {
         const endpoint = this.isLogin ? '/auth/login' : '/auth/register';
         const response = await this.$axios.post(endpoint, this.form);
-        console.log(response.data.token);
         
+        // If logged in, store the Token to localStorage.
         if (this.isLogin && response.data.token) {
           localStorage.setItem('token', response.data.token);
           this.toastMessage = 'Login successful!';
           this.showToast = true; // Show Toast message
-          // Skip to main page
+          // Skip to object page
           this.$router.push('/objects');
         } else {
           this.toastMessage = 'Registration successful! Please login.';
           this.showToast = true; // Show Toast message
           setTimeout(() => {
-            this.showToast = false; // Hide the toast after 5 seconds
-            this.toggleMode(); // Switch to login mode after 5 seconds
+            this.showToast = false; // Hide the toast after 1 seconds
+            this.toggleMode(); // Switch to login mode after 1 seconds
           }, 1000); // Set timeout for success message to disappear
         }
       } catch (error) {
@@ -94,9 +99,9 @@ export default {
         this.toastMessage = error.response?.data?.error || 'Something went wrong';
         this.showToast = true; // Show Toast message
         
-        // Auto-hide error message after 5 seconds and reset form
+        // Auto-hide error message after 1 seconds and reset form
         setTimeout(() => {
-          this.showToast = false; // Hide toast after 5 seconds
+          this.showToast = false; // Hide toast after 1 seconds
         }, 1000); // Set timeout for error message to disappear
       }
     },

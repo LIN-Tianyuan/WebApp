@@ -1,200 +1,122 @@
-# frontend
+# Frontend
 
-## Build Setup
-
+## 1. Initialize the front-end project
 ```bash
-# install dependencies
-$ npm install
-
-# serve with hot reload at localhost:3000
-$ npm run dev
-
-# build for production and launch server
-$ npm run build
-$ npm run start
-
-# generate static project
-$ npm run generate
-```
-
-For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
-
-## Special Directories
-
-You can create the following extra directories, some of which have special behaviors. Only `pages` is required; you can delete them if you don't want to use their functionality.
-
-### `assets`
-
-The assets directory contains your uncompiled assets such as Stylus or Sass files, images, or fonts.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/assets).
-
-### `components`
-
-The components directory contains your Vue.js components. Components make up the different parts of your page and can be reused and imported into your pages, layouts and even other components.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/components).
-
-### `layouts`
-
-Layouts are a great help when you want to change the look and feel of your Nuxt app, whether you want to include a sidebar or have distinct layouts for mobile and desktop.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/layouts).
-
-
-### `pages`
-
-This directory contains your application views and routes. Nuxt will read all the `*.vue` files inside this directory and setup Vue Router automatically.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/get-started/routing).
-
-### `plugins`
-
-The plugins directory contains JavaScript plugins that you want to run before instantiating the root Vue.js Application. This is the place to add Vue plugins and to inject functions or constants. Every time you need to use `Vue.use()`, you should create a file in `plugins/` and add its path to plugins in `nuxt.config.js`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/plugins).
-
-### `static`
-
-This directory contains your static files. Each file inside this directory is mapped to `/`.
-
-Example: `/static/robots.txt` is mapped as `/robots.txt`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/static).
-
-### `store`
-
-This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
-
-
-### 2. Frontend
-```bash
+# Install the Nuxt.js project creation tool
 npx create-nuxt-app frontend
 
+# Install additional dependencies
 cd frontend
-npm install bootstrap axios
+npm install bootstrap @nuxtjs/axios
 
+# Start the Nuxt Development Server
 npm run dev
 ```
 Visit `http://localhost:3000` to confirm that the front-end project is working properly.
+
+Make sure the backend is running at `http://localhost:5000`.
+
+Modify `nuxt.config.js` on the front end to configure Axios to connect to the back end.
 
 ```javascript
 export default {
   modules: ['@nuxtjs/axios'],
   axios: {
-    baseURL: 'http://localhost:5000/api'
+    baseURL: 'http://localhost:5000/api'  // Backend api
   },
 };
 ```
-### 3. Database(MongoDB)
-Installation
-```bash
-https://www.mongodb.com/try/download/community
-```
-Run
-```bash
-# Windows
-net start MongoDB
-
-# Mac/Linux
-sudo service mongod start
-```
-### 4. Registration
-#### 4.1 Define the user model
-```javascript
-const mongoose = require('mongoose');
-
-const UserSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
+## 2. Login/Registration Page Implementation
+ - `pages/auth.vue`
+```vue
+<script>
+export default {
+  methods: {
+    async login(user) {
+      try {
+        const response = await this.$axios.post('/auth/login', user);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error.response.data);
+      }
+    },
   },
-  password: {
-    type: String,
-    required: true,
-  },
-});
-
-module.exports = mongoose.model('User', UserSchema);
-```
-#### 4.2 registration function
-```javascript
-// controllers/authController.js
-// Register
-exports.register = async (req, res) => {
-  ...
 };
+</script>
 ```
-#### 4.3 Route: Registered Users
-```javascript
-const express = require('express');
-const router = express.Router();
-const authController = require('../controllers/authController');
+## 3. Object Management Page
+ - `pages/objects.vue`
 
-router.post('/register', authController.register);
+## 4. Verify Login Status
+Used to handle client-side requests, usually to verify the user's login status before the page loads. If the user is not logged in, the Nuxt.js middleware can redirect the user to the login page.
 
-module.exports = router;
-```
-#### 4.4 Integrate Route
+In other pages(object) of the application, verify that the user is logged in (check `localStorage` for a Token).
 ```javascript
-const PORT = 5000;
-const MONGO_URI = 'mongodb://localhost:27017/webapp';
-mongoose
-  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log('Connected to MongoDB');
-    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
-  })
-  .catch((err) => console.log(err));
-```
-#### 4.5 Test
-```bash
-POST http://localhost:5000/api/auth/register
-```
-```bash
-Request Body:
-{
-  "username": "testuser",
-  "password": "password123"
+// middleware/auth.js
+export default function ({ redirect }) {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    redirect('/auth');
+  }
 }
 ```
-```bash
-Response:
-{
-  "message": "User registered successfully"
-}
-```
-### 5. Login
+This middleware is then introduced in the pages that need to be protected.
 ```javascript
-// controllers/authController.js
-exports.login = async (req, res) => {
-  ...
+// pages/object.vue
+export default {
+  middleware: 'auth',
 };
 ```
 
-### 6. Object management
-#### 6.1 Create Object Models
+## 5. Add the token to the request header
+Whenever make a request, make sure that the request header carries a stored token. Use `@nuxtjs/axios`'s `interceptors` to automatically add a token to each request.
+
 ```javascript
-// models/Object.js
-...
-```
-#### 6.2 CRUD controller
-```javascript
-// controllers/objectController.js
-...
-```
-#### 6.3 CRUD route
-```javascript
-// routes/objectRoutes.js
-```
-#### 6.4 Mount the route to the main application
-```javascript
-// server.js
-app.use('/api/objects', objectRoutes); 
+// nuxt.config.js
+export default {
+  axios: {
+    baseURL: 'http://localhost:5000/api',  
+  },
+  plugins: ['~/plugins/axios.js'],
+}
 ```
 
-#### 6.5 Test api
+ Create a plugin to add the Authorization header
+(Automatically add tokens for each request)
+
+Handle Token Expiration or Invalid (If the server returns 401 Unauthorized or 400 Invalid token, catch this error and redirect the user to the login page.)
+ ```javascript
+ // plugins/axios.js
+export default function ({ $axios }) {
+  // Automatically attach a Token to each request
+  $axios.onRequest(config => {
+    if (process.client) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+    return config;
+  });
+
+  $axios.onError(error => {
+    if (error.response) {
+       if (error.response.status === 401) {
+      // Clear Token and jump to login page
+      if (process.client) {
+        localStorage.removeItem('authToken');
+      }
+      window.location.href = '/auth';
+    } else if (error.response.status == 400 && error.response.data?.message === 'Invalid token.') {
+      // Clear Token and jump to login page for invalid token
+      if (process.client) {
+        localStorage.removeItem('authToken');
+      }
+      window.location.href = '/auth';
+    }
+  }
+    return Promise.reject(error);
+  });
+}
+ ```
+
